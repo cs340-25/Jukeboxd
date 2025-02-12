@@ -1,4 +1,8 @@
+/* First, import the font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
 :root {
+  --font-primary: 'Poppins', 'Inter', system-ui, sans-serif;
   --primary-color: #7289DA;
   --primary-hover: #8399E5;
   --primary-dark: #5B6EAE;
@@ -65,31 +69,42 @@ body {
   min-height: 100vh;
   background-color: var(--background-dark);
   color: var(--text-light);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-primary);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: none;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
+
 button:hover {
-  border-color: #646cff;
+  transform: translateY(-2px);
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 @media (prefers-color-scheme: light) {
@@ -108,4 +123,10 @@ button:focus-visible {
 .app {
   min-height: 100vh;
   width: 100%;
+}
+
+/* Adjust hero title for the new font */
+.hero-content h1 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }

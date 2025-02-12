@@ -33,7 +33,6 @@ function Home() {
           <p className="hero-subtitle">Track your music journey. Share your thoughts. Discover new favorites.</p>
           <div className="hero-buttons">
             <button className="btn-primary">Get Started</button>
-            <button className="btn-secondary">How it Works</button>
           </div>
         </div>
       </section>

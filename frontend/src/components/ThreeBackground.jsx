@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment, Float } from '@react-three/drei'
@@ -19,12 +19,12 @@ function AnimatedSphere({ position, size, speed, color }) {
 
   return (
     <Float 
-      speed={1} // Slower floating motion
-      rotationIntensity={0.5} // More subtle rotation
-      floatIntensity={0.5} // More subtle floating
+      speed={1}
+      rotationIntensity={0.5}
+      floatIntensity={0.5}
     >
       <mesh ref={meshRef} position={position}>
-        <sphereGeometry args={[size, 64, 64]} /> {/* Increased segments for smoother appearance */}
+        <sphereGeometry args={[size, 64, 64]} />
         <meshStandardMaterial 
           color={color}
           roughness={0.1}
@@ -43,27 +43,29 @@ function Scene() {
       <ambientLight intensity={0.2} />
       <pointLight position={[10, 10, 10]} intensity={0.3} />
       
-      {/* Larger, slower spheres with darker colors */}
+      {/* Left side spheres */}
       <AnimatedSphere 
-        position={[-3, 0, -2]} 
+        position={[-8, 0, -2]} 
         size={1.2} 
         speed={0.3} 
         color="#1a1a1a" 
       />
       <AnimatedSphere 
-        position={[3, -1, -3]} 
-        size={1.5} 
+        position={[-6, -3, -3]} 
+        size={0.8} 
         speed={0.2} 
         color="#2a2a2a" 
       />
+      
+      {/* Right side spheres */}
       <AnimatedSphere 
-        position={[0, 1, -4]} 
-        size={0.8} 
+        position={[8, 1, -4]} 
+        size={1.5} 
         speed={0.25} 
         color="#333333" 
       />
       <AnimatedSphere 
-        position={[-2, -2, -5]} 
+        position={[6, -2, -5]} 
         size={1.0} 
         speed={0.15} 
         color="#404040" 
@@ -75,7 +77,7 @@ function Scene() {
 export default function ThreeBackground() {
   return (
     <div className="three-background">
-      <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
         <Scene />
       </Canvas>
     </div>
