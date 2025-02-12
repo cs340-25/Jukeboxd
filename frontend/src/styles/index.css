@@ -1,11 +1,13 @@
 :root {
-  --primary-color: #6B46C1;
-  --primary-dark: #553C9A;
+  --primary-color: #7289DA;
+  --primary-hover: #8399E5;
+  --primary-dark: #5B6EAE;
   --background-dark: #13111C;
   --text-light: #F7FAFC;
   --text-gray: #A0AEC0;
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-glow: rgba(114, 137, 218, 0.3);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -25,7 +27,27 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  user-select: none; /* Prevent text selection */
+  cursor: default; /* Makes default cursor instead of text cursor */
+}
+
+/* Allow text selection but keep default cursor */
+p, h1, h2, h3, h4, h5, h6, span, div {
+  user-select: text;
+  cursor: default;
+}
+
+/* Keep pointer cursor for interactive elements */
+a, button, input, select, .nav-link, .auth-button {
+  cursor: pointer;
+}
+
+/* Keep text cursor for input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea {
+  cursor: text;
 }
 
 a {
