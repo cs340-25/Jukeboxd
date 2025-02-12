@@ -1,17 +1,43 @@
-## Frontend Setup
+# Frontend Setup Guide
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm (comes with Node.js)
+Welcome to the frontend setup guide for your project. Follow these steps to get the frontend up and running on your local machine.
 
-### Installation
+## Prerequisites
 
-1. Clone the repository
+Before you begin, ensure you have the following installed:
 
-2. Navigate to the frontend directory
+- **Node.js**: Version 18 or higher
+- **npm**: Comes bundled with Node.js
 
-3. Install dependencies
-npm install
+## Installation Steps
+
+1. **Clone the Repository**
+
+   Begin by cloning the repository to your local machine. Open your terminal and run:
+
+   ```bash
+   git clone https://github.com/cs340-25/Jukeboxd
+   ```
+
+2. **Navigate to the Frontend Directory**
+
+   Change your working directory to the frontend folder:
+
+   ```bash
+   cd frontend
+   ```
+
+3. **Install Dependencies**
+
+   Install the necessary dependencies using npm:
+
+   ```bash
+   npm install
+   ```
+
+4. **Start the Development Server**
+
+   Launch the development server with the following command:
 
    ```bash
    npm run dev
