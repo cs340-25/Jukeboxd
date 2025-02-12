@@ -13,7 +13,6 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Add more routes as needed */}
         </Routes>
       </div>
     </Router>
