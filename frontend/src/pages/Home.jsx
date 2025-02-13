@@ -1,8 +1,19 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import '../styles/pages/Home.css'
 
 function Home() {
   const observerRef = useRef()
+  const [reviews, setReviews] = useState(Array(10).fill({
+    albumName: 'Cannot connect to server',
+    artistName: 'Cannot connect to server',
+    rating: '★★★★☆',
+    reviewText: 'Cannot load review content from server',
+    reviewer: {
+      username: 'Cannot connect to server',
+      avatar: '/placeholder-avatar.jpg'
+    },
+    date: 'Unknown'
+  }))
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -22,6 +33,24 @@ function Home() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    // This will be where you fetch reviews from your backend
+    // Example structure:
+    /*
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch('/api/featured-reviews');
+        const data = await response.json();
+        setReviews(data);
+      } catch (error) {
+        console.error('Failed to fetch reviews:', error);
+      }
+    };
+    
+    fetchReviews();
+    */
+  }, [])
+
   return (
     <div className="home">
       <section className="hero">
@@ -34,56 +63,35 @@ function Home() {
         </div>
       </section>
 
-      {/* Featured Section */}
-      <section className="featured-section fade-in">
+      {/* Featured Reviews Section */}
+      <section className="featured-reviews-section fade-in">
         <div className="section-header">
           <h2>Featured Reviews</h2>
           <div className="section-line"></div>
         </div>
-        <div className="review-grid">
-          {[1, 2, 3].map((item) => (
-            <div key={item} className="review-card glass-morphism">
-              <div className="album-cover"></div>
-              <div className="review-content">
+        <div className="reviews-carousel">
+          <div className="reviews-track">
+            {reviews.map((review, index) => (
+              <div key={index} className="review-card dark-glass">
                 <div className="review-header">
-                  <h3>Album Name</h3>
-                  <div className="rating">★★★★☆</div>
+                  <div className="album-info">
+                    <h3>{review.albumName}</h3>
+                    <p className="artist">{review.artistName}</p>
+                  </div>
+                  <div className="rating">{review.rating}</div>
                 </div>
-                <p className="artist">Artist Name</p>
-                <p className="review-preview">
-                  "A masterpiece that redefines the genre..."
+                <p className="review-text">
+                  {review.reviewText}
                 </p>
-                <div className="review-meta">
-                  <img className="reviewer-avatar" src="/placeholder-avatar.jpg" alt="Reviewer" />
-                  <span className="reviewer-name">@username</span>
+                <div className="reviewer-info">
+                  <div className="reviewer-profile">
+                    <img src={review.reviewer.avatar} alt="Reviewer" />
+                    <span>@{review.reviewer.username}</span>
+                  </div>
+                  <span className="review-date">{review.date}</span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Community Section */}
-      <section className="community-section fade-in">
-        <div className="section-header">
-          <h2>Join the Community</h2>
-          <div className="section-line"></div>
-        </div>
-        <div className="features-grid">
-          <div className="feature-card glass-morphism">
-            <div className="feature-icon">🎵</div>
-            <h3>Track Your Music</h3>
-            <p>Keep a record of every album you've listened to</p>
-          </div>
-          <div className="feature-card glass-morphism">
-            <div className="feature-icon">✍️</div>
-            <h3>Write Reviews</h3>
-            <p>Share your thoughts and insights with other music lovers</p>
-          </div>
-          <div className="feature-card glass-morphism">
-            <div className="feature-icon">🎯</div>
-            <h3>Get Recommendations</h3>
-            <p>Discover new music based on your taste</p>
+            ))}
           </div>
         </div>
       </section>

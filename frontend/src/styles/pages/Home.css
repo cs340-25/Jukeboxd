@@ -53,6 +53,7 @@
   height: 100%;
   z-index: 0;
   opacity: 0.6;
+  
 }
 
 /* Hero Section */
@@ -302,4 +303,134 @@
   .btn-primary, .btn-secondary {
     width: 100%;
   }
+}
+
+.featured-reviews-section {
+  padding: 4rem 0; /* Removed horizontal padding */
+  margin: 2rem auto;
+  max-width: 100%; /* Allow full width for scrolling */
+  overflow: hidden; /* Hide overflow */
+}
+
+.reviews-carousel {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.reviews-track {
+  display: flex;
+  gap: 2rem;
+  padding: 0 2rem;
+  animation: scroll 40s linear infinite;
+}
+
+.reviews-track:hover {
+  animation-play-state: paused;
+}
+
+.review-card.dark-glass {
+  flex: 0 0 350px; /* Fixed width for each card */
+  background: rgba(20, 20, 25, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-350px * 5 - 2rem * 5)); /* Adjust based on card width and gap */
+  }
+}
+
+/* Add smooth scroll shadows */
+.reviews-carousel::before,
+.reviews-carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reviews-carousel::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(19, 17, 28, 1), rgba(19, 17, 28, 0));
+}
+
+.reviews-carousel::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(19, 17, 28, 1), rgba(19, 17, 28, 0));
+}
+
+/* Keep existing review card styles (review-header, album-info, etc.) */
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.album-info h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.25rem;
+}
+
+.artist {
+  color: #a0a0a0;
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.rating {
+  color: #ffd700;
+  font-size: 1.2rem;
+}
+
+.review-text {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 1rem 0;
+}
+
+.reviewer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reviewer-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reviewer-profile img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reviewer-profile span {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+}
+
+.review-date {
+  color: #808080;
+  font-size: 0.8rem;
 } 
