@@ -7,14 +7,15 @@
 }
 
 .home {
-  background: linear-gradient(
+  /* Remove the background gradient from here since it's covering the spheres */
+  /* background: linear-gradient(
     130deg,
-    #13111C 0%,    /* Dark base */
-    #1a1625 25%,   /* Slight purple tint */
-    #1e1b2d 50%,   /* Blue-purple mix */
-    #251b2b 75%,   /* Purple-red mix */
-    #1c1418 100%   /* Dark red-black */
-  );
+    #13111C 0%,    
+    #1a1625 25%,   
+    #1e1b2d 50%,   
+    #251b2b 75%,   
+    #1c1418 100%   
+  ); */
   color: var(--text);
   min-height: 100vh;
   width: 100%;
@@ -22,6 +23,7 @@
   margin: 0;
   padding: 0;
   position: relative;
+  z-index: 1;
 }
 
 /* Add a subtle overlay for depth */
@@ -39,6 +41,7 @@
     transparent 100%
   );
   pointer-events: none;
+  z-index: 0;
 }
 
 /* Three.js Background */
@@ -61,11 +64,12 @@
   justify-content: center;
   overflow: hidden;
   padding: 2rem;
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   text-align: center;
   max-width: 800px;
 }
