@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import ThreeBackground from '../components/ThreeBackground'
 import '../styles/pages/Home.css'
 
 function Home() {
@@ -25,9 +24,7 @@ function Home() {
 
   return (
     <div className="home">
-      {/* Hero Section with 3D Background */}
       <section className="hero">
-        <ThreeBackground />
         <div className="hero-content fade-in">
           <h1><span>The Social Platform for Music Lovers</span></h1>
           <p className="hero-subtitle">Track your music journey. Share your thoughts. Discover new favorites.</p>
