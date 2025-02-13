@@ -43,6 +43,30 @@
 
 .app {
   min-height: 100vh;
-  position: relative;
   width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Position ThreeBackground to cover the entire app */
+.three-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Update particles to be behind ThreeBackground */
+.particles-background {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -2;
+  pointer-events: none;
 }
