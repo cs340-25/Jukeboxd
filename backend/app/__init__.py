@@ -45,11 +45,11 @@ def create_app():
     from app.routes.user import bp as user_bp
     from app.routes.review import bp as review_bp
 
-    # Register blueprints with /api prefix
-    app.register_blueprint(auth_bp, url_prefix='/api')
-    app.register_blueprint(spotify_bp, url_prefix='/api')
-    app.register_blueprint(user_bp, url_prefix='/api')
-    app.register_blueprint(review_bp, url_prefix='/api')
+    # Register blueprints with appropriate prefixes
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(spotify_bp, url_prefix='/api/spotify')  # Changed to include spotify in prefix
+    app.register_blueprint(user_bp, url_prefix='/api/users')
+    app.register_blueprint(review_bp, url_prefix='/api/reviews')
 
     # Print registered routes for debugging
     print("Registered routes:")
@@ -59,5 +59,9 @@ def create_app():
     @app.route('/health')
     def health_check():
         return {"status": "healthy"}
+
+    @app.route('/')
+    def hello():
+        return {"message": "Hello from Flask!"}
 
     return app 
