@@ -10,6 +10,7 @@ bp = Blueprint('review', __name__, url_prefix='/reviews')
 @bp.route('/', methods=['POST'])
 @login_required
 def create_review():
+    # Remove any test user creation code
     data = request.json
     
     # Validate required fields
@@ -18,7 +19,7 @@ def create_review():
     
     # Get track details from Spotify
     spotify = SpotifyService()
-    track = spotify.get_track(data['track_id'], current_user.spotify_access_token)
+    track = spotify.get_track(data['track_id'])
     
     review = Review(
         user_id=current_user.id,
@@ -53,8 +54,8 @@ def get_reviews():
         'reviews': [{
             'id': r.id,
             'user': {
-                'id': r.user.id,
-                'username': r.user.username
+                'id': r.author.id,
+                'username': r.author.username
             },
             'track_name': r.track_name,
             'artist_name': r.artist_name,
