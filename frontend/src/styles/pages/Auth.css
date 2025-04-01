@@ -139,11 +139,14 @@
 }
 
 .error-message {
-  color: #ff4d4d;
-  font-size: 0.8rem;
-  margin-top: 0.3rem;
-  display: block;
-  text-align: left;
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ffcdd2;
 }
 
 @media (max-width: 480px) {

@@ -45,4 +45,24 @@
 .auth-button:hover {
   background: var(--primary-dark);
   transform: translateY(-2px);
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.auth-button.logout {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+}
+
+.auth-button.logout:hover {
+  background: var(--primary-color);
 } 

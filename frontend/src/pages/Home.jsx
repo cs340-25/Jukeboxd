@@ -1,8 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import '../styles/pages/Home.css'
 
 function Home() {
+  const location = useLocation()
+  const navigate = useNavigate()
   const observerRef = useRef()
+  const [user, setUser] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [newUsername, setNewUsername] = useState('')
+  const [profileImage, setProfileImage] = useState('/placeholder-avatar.jpg')
   const [reviews, setReviews] = useState(Array(10).fill({
     albumName: 'Cannot connect to server',
     artistName: 'Cannot connect to server',
@@ -14,6 +21,83 @@ function Home() {
     },
     date: 'Unknown'
   }))
+
+  useEffect(() => {
+    // Check for user info in URL parameters
+    const params = new URLSearchParams(location.search)
+    const userEmail = params.get('user')
+    const userName = params.get('name')
+    
+    if (userEmail) {
+      setUser({
+        email: userEmail,
+        name: userName,
+        username: userName?.split(' ')[0] || userEmail.split('@')[0] // Default username
+      })
+      setNewUsername(userName?.split(' ')[0] || userEmail.split('@')[0])
+      // Clean up the URL
+      navigate(location.pathname, { replace: true })
+    }
+  }, [location, navigate])
+
+  const handleProfileImageChange = async (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = async () => {
+        const base64Image = reader.result
+        setProfileImage(base64Image)
+        
+        try {
+          const response = await fetch('/api/user/profile/image', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: base64Image }),
+          })
+          
+          if (!response.ok) {
+            throw new Error('Failed to update profile image')
+          }
+          
+          const data = await response.json()
+          setProfileImage(data.profile_image || base64Image)
+        } catch (error) {
+          console.error('Error updating profile image:', error)
+          // Revert to previous image on error
+          setProfileImage('/placeholder-avatar.jpg')
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleUsernameUpdate = async () => {
+    if (newUsername.trim()) {
+      try {
+        const response = await fetch('/api/user/profile/username', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username: newUsername.trim() }),
+        })
+        
+        if (!response.ok) {
+          throw new Error('Failed to update username')
+        }
+        
+        const data = await response.json()
+        setUser(prev => ({ ...prev, username: data.username }))
+        setIsEditing(false)
+      } catch (error) {
+        console.error('Error updating username:', error)
+        // Revert to previous username on error
+        setNewUsername(user.username)
+      }
+    }
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -58,7 +142,50 @@ function Home() {
           <h1><span>The Social Platform for Music Lovers</span></h1>
           <p className="hero-subtitle">Track your music journey. Share your thoughts. Discover new favorites.</p>
           <div className="hero-buttons">
-            <button className="btn-primary">Get Started</button>
+            {!user ? (
+              <button className="btn-primary" onClick={() => navigate('/auth')}>
+                Get Started
+              </button>
+            ) : (
+              <div className="user-welcome">
+                <div className="profile-section">
+                  <div className="profile-image-container">
+                    <img src={profileImage} alt="Profile" className="profile-image" />
+                    <label className="profile-image-upload">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleProfileImageChange}
+                        style={{ display: 'none' }}
+                      />
+                      <span className="upload-icon">📷</span>
+                    </label>
+                  </div>
+                  <div className="profile-info">
+                    {isEditing ? (
+                      <div className="username-edit">
+                        <input
+                          type="text"
+                          value={newUsername}
+                          onChange={(e) => setNewUsername(e.target.value)}
+                          className="username-input"
+                        />
+                        <button onClick={handleUsernameUpdate} className="btn-primary">Save</button>
+                        <button onClick={() => setIsEditing(false)} className="btn-secondary">Cancel</button>
+                      </div>
+                    ) : (
+                      <div className="username-display">
+                        <h2>{user.username}</h2>
+                        <button onClick={() => setIsEditing(true)} className="btn-text">Edit Username</button>
+                      </div>
+                    )}
+                    <button className="btn-secondary" onClick={() => window.location.href = 'http://localhost:5001/api/google/logout'}>
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

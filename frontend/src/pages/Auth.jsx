@@ -1,8 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import '../styles/pages/Auth.css'
 
-function Auth() {
+const Auth = () => {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const error = searchParams.get('error')
+
+  useEffect(() => {
+    if (error) {
+      console.error('Authentication error:', error)
+    }
+  }, [error])
+
   const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
     username: '',
@@ -95,6 +106,27 @@ function Auth() {
     }
   }
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5001/api/google/login'
+  }
+
+  const getErrorMessage = (error) => {
+    switch (error) {
+      case 'access_denied':
+        return 'Access was denied. Please try again.';
+      case 'login_failed':
+        return 'Login failed. Please try again.';
+      case 'token_error':
+        return 'Failed to authenticate with Google. Please try again.';
+      case 'userinfo_error':
+        return 'Failed to get user information. Please try again.';
+      case 'database_error':
+        return 'Failed to save user information. Please try again.';
+      default:
+        return 'An unexpected error occurred. Please try again.';
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -110,6 +142,12 @@ function Auth() {
               ? 'Continue your musical journey' 
               : 'Start sharing your music taste with the world'}
           </p>
+
+          {error && (
+            <div className="error-message">
+              {getErrorMessage(error)}
+            </div>
+          )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
             {!isLogin && (
@@ -159,7 +197,10 @@ function Auth() {
             <span>or</span>
           </div>
 
-          <button className="btn-secondary social-auth-btn">
+          <button 
+            className="btn-secondary social-auth-btn"
+            onClick={handleGoogleLogin}
+          >
             <img src="/google-icon.svg" alt="Google" />
             Continue with Google
           </button>
