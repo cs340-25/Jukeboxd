@@ -12,7 +12,13 @@ const Auth = () => {
     if (error) {
       console.error('Authentication error:', error)
     }
-  }, [error])
+    
+    // Check if user is already logged in
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+    if (isLoggedIn) {
+      navigate('/')
+    }
+  }, [error, navigate])
 
   const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
@@ -20,41 +26,8 @@ const Auth = () => {
     email: '',
     password: ''
   })
-  const [errors, setErrors] = useState({
-    email: '',
-    password: ''
-  })
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
-  }
-
-  const validatePassword = (password) => {
-    if (password.length < 7) {
-      return 'Password must be at least 7 characters'
-    }
-
-    if (!/[A-Z]/.test(password)) {
-      return 'Password must contain at least one capital letter'
-    }
-
-    const allowedSpecialChars = '~`!@#$%^&*()-_+={}[]|\\;:"<>,./?'
-    const hasAllowedSpecial = [...password].some(char => allowedSpecialChars.includes(char))
-    if (!hasAllowedSpecial) {
-      return 'Password must contain at least one special character'
-    }
-
-    // Check for unrecognized special characters
-    const unrecognizedChar = [...password].find(char => {
-      return !char.match(/[a-zA-Z0-9]/) && !allowedSpecialChars.includes(char)
-    })
-    if (unrecognizedChar) {
-      return 'Unrecognized character detected'
-    }
-
-    return ''
-  }
+  const [formError, setFormError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -62,70 +35,69 @@ const Auth = () => {
       ...prev,
       [name]: value
     }))
-
-    // Real-time validation
-    if (name === 'email') {
-      setErrors(prev => ({
-        ...prev,
-        email: validateEmail(value) ? '' : 'Invalid email format'
-      }))
-    }
-    if (name === 'password') {
-      setErrors(prev => ({
-        ...prev,
-        password: validatePassword(value)
-      }))
+    
+    // Clear any form errors when user types
+    if (formError) {
+      setFormError('')
     }
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    setFormError('')
     
-    // Validate before submission
-    const emailError = validateEmail(formData.email) ? '' : 'Invalid email format'
-    const passwordError = validatePassword(formData.password)
-
-    setErrors({
-      email: emailError,
-      password: passwordError
-    })
-
-    if (!emailError && !passwordError) {
-      // Proceed with form submission
-      console.log('Form submitted:', formData)
-    }
-  }
-
-  // Add this function to check if form is valid
-  const isFormValid = () => {
-    if (isLogin) {
-      return formData.email && formData.password && !errors.email && !errors.password
-    } else {
-      return formData.username && formData.email && formData.password && 
-             !errors.email && !errors.password
-    }
+    // Simulate API call delay
+    setTimeout(() => {
+      if (isLogin) {
+        // For presentation, only allow alex@gmail.com with password 123
+        if (formData.email === 'alex@gmail.com' && formData.password === '123') {
+          // Store authentication status in localStorage
+          localStorage.setItem('isLoggedIn', 'true')
+          localStorage.setItem('user', JSON.stringify({
+            email: formData.email,
+            username: 'Alex',
+            avatar: 'https://ui-avatars.com/api/?name=Alex&background=random'
+          }))
+          
+          // Redirect to home page
+          navigate('/')
+        } else {
+          setFormError('Invalid email or password. Try alex@gmail.com / 123')
+        }
+      } else {
+        // For registration, just log them in automatically
+        localStorage.setItem('isLoggedIn', 'true')
+        localStorage.setItem('user', JSON.stringify({
+          email: formData.email,
+          username: formData.username || 'User',
+          avatar: `https://ui-avatars.com/api/?name=${formData.username || 'User'}&background=random`
+        }))
+        
+        // Redirect to home page
+        navigate('/')
+      }
+      
+      setIsSubmitting(false)
+    }, 800) // Simulate network delay
   }
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5001/api/google/login'
+    // For presentation, simulate Google login
+    setIsSubmitting(true)
+    
+    setTimeout(() => {
+      localStorage.setItem('isLoggedIn', 'true')
+      localStorage.setItem('user', JSON.stringify({
+        email: 'user@gmail.com',
+        username: 'Google User',
+        avatar: 'https://ui-avatars.com/api/?name=Google+User&background=random'
+      }))
+      
+      navigate('/')
+      setIsSubmitting(false)
+    }, 1000)
   }
-
-  const getErrorMessage = (error) => {
-    switch (error) {
-      case 'access_denied':
-        return 'Access was denied. Please try again.';
-      case 'login_failed':
-        return 'Login failed. Please try again.';
-      case 'token_error':
-        return 'Failed to authenticate with Google. Please try again.';
-      case 'userinfo_error':
-        return 'Failed to get user information. Please try again.';
-      case 'database_error':
-        return 'Failed to save user information. Please try again.';
-      default:
-        return 'An unexpected error occurred. Please try again.';
-    }
-  };
 
   return (
     <div className="auth-page">
@@ -145,7 +117,19 @@ const Auth = () => {
 
           {error && (
             <div className="error-message">
-              {getErrorMessage(error)}
+              An authentication error occurred. Please try again.
+            </div>
+          )}
+          
+          {formError && (
+            <div className="error-message">
+              {formError}
+            </div>
+          )}
+          
+          {isLogin && (
+            <div className="demo-credentials">
+              <p>For demo: Use email <strong>alex@gmail.com</strong> and password <strong>123</strong></p>
             </div>
           )}
 
@@ -171,7 +155,6 @@ const Auth = () => {
                 onChange={handleInputChange}
                 required 
               />
-              {errors.email && <span className="error-message">{errors.email}</span>}
             </div>
             <div className="form-group">
               <input 
@@ -182,14 +165,15 @@ const Auth = () => {
                 onChange={handleInputChange}
                 required 
               />
-              {errors.password && <span className="error-message">{errors.password}</span>}
             </div>
             <button 
               type="submit" 
               className="btn-primary"
-              disabled={!isFormValid()}
+              disabled={isSubmitting}
             >
-              {isLogin ? 'Log In' : 'Sign Up'}
+              {isSubmitting 
+                ? 'Processing...' 
+                : isLogin ? 'Log In' : 'Sign Up'}
             </button>
           </form>
 
@@ -200,8 +184,10 @@ const Auth = () => {
           <button 
             className="btn-secondary social-auth-btn"
             onClick={handleGoogleLogin}
+            disabled={isSubmitting}
           >
-            <img src="/google-icon.svg" alt="Google" />
+            {/* Use a placeholder Google icon or remove if not available */}
+            <span className="google-icon">G</span>
             Continue with Google
           </button>
 
@@ -212,6 +198,7 @@ const Auth = () => {
             <button 
               className="btn-text" 
               onClick={() => setIsLogin(!isLogin)}
+              disabled={isSubmitting}
             >
               {isLogin ? 'Sign Up' : 'Log In'}
             </button>
