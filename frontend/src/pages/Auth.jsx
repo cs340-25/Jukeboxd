@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import '../styles/pages/Auth.css'
 
 const Auth = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const error = searchParams.get('error')
+  const { isLoggedIn, login, register } = useAuth()
 
   useEffect(() => {
     if (error) {
       console.error('Authentication error:', error)
     }
     
-    // Check if user is already logged in
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+    // Redirect if already logged in
     if (isLoggedIn) {
       navigate('/')
     }
-  }, [error, navigate])
+  }, [error, navigate, isLoggedIn])
 
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLoginMode, setIsLoginMode] = useState(true)
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -49,16 +50,15 @@ const Auth = () => {
     
     // Simulate API call delay
     setTimeout(() => {
-      if (isLogin) {
+      if (isLoginMode) {
         // For presentation, only allow alex@gmail.com with password 123
         if (formData.email === 'alex@gmail.com' && formData.password === '123') {
-          // Store authentication status in localStorage
-          localStorage.setItem('isLoggedIn', 'true')
-          localStorage.setItem('user', JSON.stringify({
+          // Use login function from context
+          login({
             email: formData.email,
             username: 'Alex',
             avatar: 'https://ui-avatars.com/api/?name=Alex&background=random'
-          }))
+          })
           
           // Redirect to home page
           navigate('/')
@@ -67,12 +67,11 @@ const Auth = () => {
         }
       } else {
         // For registration, just log them in automatically
-        localStorage.setItem('isLoggedIn', 'true')
-        localStorage.setItem('user', JSON.stringify({
+        register({
           email: formData.email,
           username: formData.username || 'User',
           avatar: `https://ui-avatars.com/api/?name=${formData.username || 'User'}&background=random`
-        }))
+        })
         
         // Redirect to home page
         navigate('/')
@@ -87,12 +86,11 @@ const Auth = () => {
     setIsSubmitting(true)
     
     setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true')
-      localStorage.setItem('user', JSON.stringify({
+      login({
         email: 'user@gmail.com',
         username: 'Google User',
         avatar: 'https://ui-avatars.com/api/?name=Google+User&background=random'
-      }))
+      })
       
       navigate('/')
       setIsSubmitting(false)
@@ -108,9 +106,9 @@ const Auth = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2>{isLogin ? 'Welcome Back' : 'Join Jukebox\'d'}</h2>
+          <h2>{isLoginMode ? 'Welcome Back' : 'Join Jukebox\'d'}</h2>
           <p className="auth-subtitle">
-            {isLogin 
+            {isLoginMode 
               ? 'Continue your musical journey' 
               : 'Start sharing your music taste with the world'}
           </p>
@@ -127,14 +125,14 @@ const Auth = () => {
             </div>
           )}
           
-          {isLogin && (
+          {isLoginMode && (
             <div className="demo-credentials">
               <p>For demo: Use email <strong>alex@gmail.com</strong> and password <strong>123</strong></p>
             </div>
           )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
-            {!isLogin && (
+            {!isLoginMode && (
               <div className="form-group">
                 <input 
                   type="text" 
@@ -173,7 +171,7 @@ const Auth = () => {
             >
               {isSubmitting 
                 ? 'Processing...' 
-                : isLogin ? 'Log In' : 'Sign Up'}
+                : isLoginMode ? 'Log In' : 'Sign Up'}
             </button>
           </form>
 
@@ -186,21 +184,20 @@ const Auth = () => {
             onClick={handleGoogleLogin}
             disabled={isSubmitting}
           >
-            {/* Use a placeholder Google icon or remove if not available */}
             <span className="google-icon">G</span>
             Continue with Google
           </button>
 
           <p className="auth-switch">
-            {isLogin 
+            {isLoginMode 
               ? "Don't have an account? " 
               : "Already have an account? "}
             <button 
               className="btn-text" 
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => setIsLoginMode(!isLoginMode)}
               disabled={isSubmitting}
             >
-              {isLogin ? 'Sign Up' : 'Log In'}
+              {isLoginMode ? 'Sign Up' : 'Log In'}
             </button>
           </p>
         </motion.div>

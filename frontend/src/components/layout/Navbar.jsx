@@ -1,55 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SearchBar from '../SearchBar'
+import { useAuth } from '../../contexts/AuthContext'
 import '../../styles/layout/Navbar.css'
 
 function Navbar() {
   const navigate = useNavigate()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState(null)
+  const { isLoggedIn, user, logout } = useAuth()
   const [showProfileMenu, setShowProfileMenu] = useState(false)
-
-  useEffect(() => {
-    // Check login state from localStorage
-    const checkLoginState = () => {
-      const loginState = localStorage.getItem('isLoggedIn') === 'true'
-      setIsLoggedIn(loginState)
-      
-      if (loginState) {
-        try {
-          const userData = JSON.parse(localStorage.getItem('user'))
-          setUser(userData)
-        } catch (error) {
-          console.error('Error parsing user data:', error)
-        }
-      }
-    }
-    
-    // Check login state on mount
-    checkLoginState()
-    
-    // Set up event listener for storage changes (in case of login/logout in another tab)
-    window.addEventListener('storage', checkLoginState)
-    
-    // Clean up event listener
-    return () => {
-      window.removeEventListener('storage', checkLoginState)
-    }
-  }, [])
 
   const handleProfileClick = () => {
     setShowProfileMenu(!showProfileMenu)
   }
 
   const handleLogout = () => {
-    // Clear login state from localStorage
-    localStorage.removeItem('isLoggedIn')
-    localStorage.removeItem('user')
-    setIsLoggedIn(false)
-    setUser(null)
+    logout()
     setShowProfileMenu(false)
-    
-    // Navigate to home
     navigate('/')
   }
 

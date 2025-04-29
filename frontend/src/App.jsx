@@ -10,28 +10,31 @@ import SearchResults from './pages/SearchResults'
 import ThreeBackground from './components/ThreeBackground'
 import ParticlesBackground from './components/ParticlesBackground'
 import CustomScrollbar from './components/CustomScrollbar'
+import { AuthProvider } from './contexts/AuthContext'
 import './styles/App.css'
 
 function App() {
   return (
-    <Router>
-      <CustomScrollbar />
-      <div className="app">
-        <ThreeBackground />
-        <ParticlesBackground />
-        <Navbar />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/discover" element={<Discover />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/lists" element={<Lists />} />
-            <Route path="/search" element={<SearchResults />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <CustomScrollbar />
+        <div className="app">
+          <ThreeBackground />
+          <ParticlesBackground />
+          <Navbar />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/discover" element={<Discover />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/lists" element={<Lists />} />
+              <Route path="/search" element={<SearchResults />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </AuthProvider>
   )
 }
 
